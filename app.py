@@ -1,31 +1,37 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from config.db import db
-from models.pet_model import Pet
+import os
+
+print("APP STARTING...")
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-app.config['JWT_SECRET_KEY'] = 'super-secret-key'
+# ✅ Use environment variables
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///test.db")
+app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
 
 db.init_app(app)
 jwt = JWTManager(app)
 
-# ✅ Register auth routes
+# ✅ Register routes
 from routes.auth_routes import auth_bp
-app.register_blueprint(auth_bp)
-
-# ✅ Register pet routes (MOVE HERE)
 from routes.pet_routes import pet_bp
+
+app.register_blueprint(auth_bp)
 app.register_blueprint(pet_bp)
 
 @app.route('/')
 def home():
     return {"message": "API is running successfully"}
 
+# ✅ Create DB tables
 from models.user_model import User
+from models.pet_model import Pet
+
 with app.app_context():
     db.create_all()
 
+# ❌ REMOVE debug=True
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
