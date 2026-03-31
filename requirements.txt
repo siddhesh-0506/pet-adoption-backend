@@ -15,9 +15,7 @@ packaging==26.0
 pyjokes==0.8.3
 PyJWT==2.12.1
 pyotp==2.9.0
-pypiwin32==223
 pyttsx3==2.99
-pywin32==311
 requests==2.32.5
 urllib3==2.6.3
 Werkzeug==3.1.6
